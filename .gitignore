@@ -1,0 +1,62 @@
+# =========================
+# OS
+# =========================
+
+.DS_Store
+Thumbs.db
+
+# =========================
+# Node.js / Vue
+# =========================
+
+frontend/node_modules/
+frontend/dist/
+
+# npm
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# =========================
+# Go
+# =========================
+
+backend/bin/
+backend/coverage.out
+
+# Air (ホットリロード導入時)
+backend/tmp/
+
+# =========================
+# Environment
+# =========================
+
+.env
+.env.*
+
+!.env.example
+
+# =========================
+# IDE
+# =========================
+
+.vscode/
+.idea/
+
+# =========================
+# Logs
+# =========================
+
+*.log
+
+# =========================
+# Docker
+# =========================
+
+postgres_data/
+
+# =========================
+# Testing
+# =========================
+
+coverage/
