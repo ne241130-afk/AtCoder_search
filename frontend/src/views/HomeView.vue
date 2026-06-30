@@ -1,6 +1,7 @@
 <script setup lang="ts">
 
-import {ref,onMounted} from "vue"
+import {ref,onMounted,watch} from "vue"
+import { useRoute, useRouter } from "vue-router"
 
 import SearchBar from "../components/SearchBar.vue"
 import ProblemList from "../components/ProblemList.vue"
@@ -14,6 +15,9 @@ import type {SearchCondition} from "../types/searchCondition"
 import TagFilter from "../components/TagFilter.vue"
 import DifficultyFilter from "../components/DifficultyFilter.vue"
 import { getTags } from "../services/problem"
+
+const route = useRoute()
+const router = useRouter()
 
 const tags = ref<string[]>([])
 
@@ -41,17 +45,83 @@ function sortProblems() {
     problems.value = nextProblems
 }
 
+function toSingleValue(value: unknown): string {
+    if (Array.isArray(value) && value.length > 0) {
+        return String(value[0])
+    }
+
+    if (typeof value === "string") {
+        return value
+    }
+
+    return ""
+}
+
+function parseQuery(query: Record<string, unknown>) {
+    condition.value.keyword = toSingleValue(query.keyword)
+
+    const tagsParam = toSingleValue(query.tags)
+    condition.value.tags = tagsParam
+        ? tagsParam.split(",").map(tag => tag.trim()).filter(Boolean)
+        : []
+
+    condition.value.contestType = toSingleValue(query.contest)
+
+    const minParam = toSingleValue(query.minDifficulty)
+    condition.value.minDifficulty = minParam ? Number(minParam) : null
+
+    const maxParam = toSingleValue(query.maxDifficulty)
+    condition.value.maxDifficulty = maxParam ? Number(maxParam) : null
+
+    sortOrder.value = toSingleValue(query.sort)
+}
+
+function buildQuery() {
+    const query: Record<string, string> = {}
+
+    if (condition.value.keyword) {
+        query.keyword = condition.value.keyword
+    }
+
+    if (condition.value.tags.length > 0) {
+        query.tags = condition.value.tags.join(",")
+    }
+
+    if (condition.value.contestType) {
+        query.contest = condition.value.contestType
+    }
+
+    if (condition.value.minDifficulty !== null && condition.value.minDifficulty !== undefined) {
+        query.minDifficulty = String(condition.value.minDifficulty)
+    }
+
+    if (condition.value.maxDifficulty !== null && condition.value.maxDifficulty !== undefined) {
+        query.maxDifficulty = String(condition.value.maxDifficulty)
+    }
+
+    if (sortOrder.value) {
+        query.sort = sortOrder.value
+    }
+
+    return query
+}
+
+function syncUrl() {
+    router.replace({ query: buildQuery() })
+}
+
 async function search(){
 
     problems.value=await getProblems(condition.value)
     sortProblems()
+    syncUrl()
 
 }
 
 onMounted(async () => {
 
     tags.value = await getTags()
-
+    parseQuery(route.query)
     await search()
 
 })
@@ -76,9 +146,16 @@ function toggleTag(tag:string){
 function handleSortChange(value: string) {
     sortOrder.value = value
     sortProblems()
+    syncUrl()
 }
 
-onMounted(search)
+watch(
+    () => [condition.value.keyword, condition.value.tags, condition.value.contestType, condition.value.minDifficulty, condition.value.maxDifficulty],
+    () => {
+        syncUrl()
+    },
+    { deep: true }
+)
 
 </script>
 
