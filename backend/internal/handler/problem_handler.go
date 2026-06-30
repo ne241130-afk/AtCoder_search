@@ -7,8 +7,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"github.com/ne241130/atcoder-learning-hub/backend/internal/mock"
 	"github.com/ne241130/atcoder-learning-hub/backend/internal/model"
+	"github.com/ne241130/atcoder-learning-hub/backend/internal/repository"
 )
 
 func filterProblems(problems []model.Problem, keyword string, selectedTags []string, contestType string, minDifficulty *int, maxDifficulty *int) []model.Problem {
@@ -60,6 +60,19 @@ func filterProblems(problems []model.Problem, keyword string, selectedTags []str
 	return result
 }
 
+func GetProblemByID(c *gin.Context) {
+	problemID := c.Param("id")
+	repo := &repository.ProblemRepository{}
+
+	problem, err := repo.FindByID(problemID)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"message": "problem not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, problem)
+}
+
 func GetProblems(c *gin.Context) {
 	tagsParam := strings.ToLower(c.Query("tags"))
 	var selectedTags []string
@@ -83,7 +96,14 @@ func GetProblems(c *gin.Context) {
 		}
 	}
 
-	filtered := filterProblems(mock.Problems, keyword, selectedTags, contestType, minDifficulty, maxDifficulty)
+	repo := &repository.ProblemRepository{}
+	problems, err := repo.FindAll()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "failed to load problems"})
+		return
+	}
+
+	filtered := filterProblems(problems, keyword, selectedTags, contestType, minDifficulty, maxDifficulty)
 
 	page := 1
 	if pageParam := c.Query("page"); pageParam != "" {

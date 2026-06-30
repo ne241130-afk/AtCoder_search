@@ -1,5 +1,6 @@
 import axios from "axios"
 
+import type { Problem } from "../types/problem"
 import type { PaginatedProblems } from "../types/paginatedProblems"
 import type { SearchCondition } from "../types/searchCondition"
 
@@ -13,6 +14,11 @@ export async function getTags(): Promise<string[]> {
 
     return res.data
 
+}
+
+export async function getProblemById(id: string): Promise<Problem> {
+    const res = await api.get(`/api/problems/${id}`)
+    return res.data
 }
 
 export async function getProblems(

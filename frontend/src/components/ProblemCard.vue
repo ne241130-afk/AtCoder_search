@@ -49,6 +49,9 @@ defineProps<{
       >
         AtCoder Problems
       </a>
+      <router-link :to="{ name: 'problem-detail', params: { id: problem.id } }" class="action-link detail-link">
+        詳細を見る
+      </router-link>
     </div>
   </div>
 </template>
@@ -87,6 +90,10 @@ defineProps<{
     background:#1976d2;
     color:white;
     text-decoration:none;
+}
+
+.detail-link{
+    background:#2e7d32;
 }
 
 </style>
