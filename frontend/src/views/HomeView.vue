@@ -1,22 +1,60 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue"
+
+import {ref,onMounted} from "vue"
 
 import SearchBar from "../components/SearchBar.vue"
 import ProblemList from "../components/ProblemList.vue"
 
-import { getProblems } from "../services/problem"
+import {getProblems} from "../services/problem"
 
-import type { Problem } from "../types/problem"
+import type {Problem} from "../types/problem"
+import type {SearchCondition} from "../types/searchCondition"
 
-const problems = ref<Problem[]>([])
+import TagFilter from "../components/TagFilter.vue"
+import { getTags } from "../services/problem"
 
-async function load(keyword = "") {
-    problems.value = await getProblems(keyword)
+const tags = ref<string[]>([])
+
+const problems=ref<Problem[]>([])
+
+const condition=ref<SearchCondition>({
+    keyword:"",
+    tags:[]
+})
+
+async function search(){
+
+    problems.value=await getProblems(condition.value)
+
 }
 
-onMounted(() => {
-    load()
+onMounted(async () => {
+
+    tags.value = await getTags()
+
+    await search()
+
 })
+
+function toggleTag(tag:string){
+
+    if(condition.value.tags.includes(tag)){
+
+        condition.value.tags =
+            condition.value.tags.filter(t=>t!==tag)
+
+    }else{
+
+        condition.value.tags.push(tag)
+
+    }
+
+    search()
+
+}
+
+onMounted(search)
+
 </script>
 
 <template>
@@ -30,9 +68,14 @@ AtCoder Learning Hub
 </h1>
 
 <SearchBar
+  v-model="condition.keyword"
+  @search="search"
+/>
 
-@search="load"
-
+<TagFilter
+  :tags="tags"
+  :selected="condition.tags"
+  @toggle="toggleTag"
 />
 
 <ProblemList

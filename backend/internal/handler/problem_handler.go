@@ -12,7 +12,13 @@ import (
 
 func GetProblems(c *gin.Context) {
 
-	tag := strings.ToLower(c.Query("tag"))
+	tagsParam := strings.ToLower(c.Query("tags"))
+
+	var selectedTags []string
+
+	if tagsParam != "" {
+		selectedTags = strings.Split(tagsParam, ",")
+	}
 	keyword := strings.ToLower(c.Query("keyword"))
 
 	var result []model.Problem
@@ -20,12 +26,17 @@ func GetProblems(c *gin.Context) {
 	for _, p := range mock.Problems {
 
 		// タグ検索
-		if tag != "" {
+		if len(selectedTags) > 0 {
 			found := false
 
-			for _, t := range p.Tags {
-				if strings.ToLower(t) == tag {
-					found = true
+			for _, selectedTag := range selectedTags {
+				for _, t := range p.Tags {
+					if strings.ToLower(t) == selectedTag {
+						found = true
+						break
+					}
+				}
+				if found {
 					break
 				}
 			}

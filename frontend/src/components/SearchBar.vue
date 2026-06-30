@@ -1,70 +1,82 @@
 <script setup lang="ts">
-import { ref } from "vue"
 
-const keyword = ref("")
+const keyword = defineModel<string>({
+  required: true
+})
 
 const emit = defineEmits<{
-  (e: "search", keyword: string): void
+  (e:"search"):void
 }>()
 
-function search() {
-  emit("search", keyword.value)
-}
 </script>
 
 <template>
-  <div class="search-container">
-    <input
-      v-model="keyword"
-      @keyup.enter="search"
-      placeholder="問題名・コンテスト名で検索"
-      class="search-input"
-    />
 
-    <button
-      class="search-button"
-      @click="search"
-    >
-      🔍
-    </button>
-  </div>
+<div class="search-container">
+
+<input
+
+v-model="keyword"
+
+placeholder="問題名・コンテスト名"
+
+@keyup.enter="emit('search')"
+
+class="search-input"
+
+/>
+
+<button
+
+class="search-button"
+
+@click="emit('search')"
+
+>
+
+🔍
+
+</button>
+
+</div>
+
 </template>
 
 <style scoped>
 
 .search-container{
 
-    display:flex;
+display:flex;
 
-    gap:12px;
+gap:12px;
 
-    margin:30px 0;
+margin-bottom:30px;
 
 }
 
 .search-input{
 
-    flex:1;
+flex:1;
 
-    padding:12px;
+padding:12px;
 
-    font-size:16px;
+font-size:16px;
 
-    border-radius:8px;
+border-radius:8px;
 
-    border:1px solid #ccc;
+border:1px solid #ccc;
 
 }
 
 .search-button{
 
-    width:60px;
+width:60px;
 
-    border:none;
+border:none;
 
-    border-radius:8px;
+border-radius:8px;
 
-    cursor:pointer;
+cursor:pointer;
 
 }
 

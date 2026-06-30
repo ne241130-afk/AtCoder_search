@@ -40,6 +40,6 @@ func main() {
 	})
 
 	r.GET("/api/problems", handler.GetProblems)
-
+	r.GET("/api/tags", handler.GetTags)
 	r.Run(":8080")
 }
