@@ -83,6 +83,37 @@ func GetProblems(c *gin.Context) {
 		}
 	}
 
-	result := filterProblems(mock.Problems, keyword, selectedTags, contestType, minDifficulty, maxDifficulty)
-	c.JSON(http.StatusOK, result)
+	filtered := filterProblems(mock.Problems, keyword, selectedTags, contestType, minDifficulty, maxDifficulty)
+
+	page := 1
+	if pageParam := c.Query("page"); pageParam != "" {
+		if parsed, err := strconv.Atoi(pageParam); err == nil && parsed > 0 {
+			page = parsed
+		}
+	}
+
+	limit := 20
+	if limitParam := c.Query("limit"); limitParam != "" {
+		if parsed, err := strconv.Atoi(limitParam); err == nil && parsed > 0 {
+			limit = parsed
+		}
+	}
+
+	start := (page - 1) * limit
+	end := start + limit
+	if start > len(filtered) {
+		start = len(filtered)
+	}
+	if end > len(filtered) {
+		end = len(filtered)
+	}
+
+	response := gin.H{
+		"items": filtered[start:end],
+		"total": len(filtered),
+		"page":  page,
+		"limit": limit,
+	}
+
+	c.JSON(http.StatusOK, response)
 }

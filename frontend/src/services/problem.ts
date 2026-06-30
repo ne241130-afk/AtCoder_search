@@ -1,6 +1,6 @@
 import axios from "axios"
 
-import type { Problem } from "../types/problem"
+import type { PaginatedProblems } from "../types/paginatedProblems"
 import type { SearchCondition } from "../types/searchCondition"
 
 const api = axios.create({
@@ -16,8 +16,10 @@ export async function getTags(): Promise<string[]> {
 }
 
 export async function getProblems(
-    condition:SearchCondition
-):Promise<Problem[]>{
+    condition:SearchCondition,
+    page:number,
+    limit:number
+):Promise<PaginatedProblems>{
 
     const res=await api.get("/api/problems",{
 
@@ -31,7 +33,9 @@ export async function getProblems(
 
             minDifficulty:condition.minDifficulty ?? "",
 
-            maxDifficulty:condition.maxDifficulty ?? ""
+            maxDifficulty:condition.maxDifficulty ?? "",
+            page,
+            limit
 
         }
 

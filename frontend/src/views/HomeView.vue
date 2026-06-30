@@ -5,12 +5,14 @@ import { useRoute, useRouter } from "vue-router"
 
 import SearchBar from "../components/SearchBar.vue"
 import ProblemList from "../components/ProblemList.vue"
+import Pagination from "../components/Pagination.vue"
 import SortSelect from "../components/SortSelect.vue"
 
 import {getProblems} from "../services/problem"
 
 import type {Problem} from "../types/problem"
 import type {SearchCondition} from "../types/searchCondition"
+import type {PaginatedProblems} from "../types/paginatedProblems"
 
 import TagFilter from "../components/TagFilter.vue"
 import DifficultyFilter from "../components/DifficultyFilter.vue"
@@ -22,8 +24,11 @@ const router = useRouter()
 const tags = ref<string[]>([])
 
 const problems=ref<Problem[]>([])
+const pagination = ref<PaginatedProblems>({ items: [], total: 0, page: 1, limit: 20 })
 
 const sortOrder = ref<string>("")
+const page = ref(1)
+const limit = ref(20)
 
 const condition=ref<SearchCondition>({
     keyword:"",
@@ -33,8 +38,8 @@ const condition=ref<SearchCondition>({
     maxDifficulty:null
 })
 
-function sortProblems() {
-    const nextProblems = [...problems.value]
+function sortProblems(items: Problem[]) {
+    const nextProblems = [...items]
 
     if (sortOrder.value === "asc") {
         nextProblems.sort((a, b) => a.difficulty - b.difficulty)
@@ -42,7 +47,7 @@ function sortProblems() {
         nextProblems.sort((a, b) => b.difficulty - a.difficulty)
     }
 
-    problems.value = nextProblems
+    return nextProblems
 }
 
 function toSingleValue(value: unknown): string {
@@ -107,13 +112,17 @@ function buildQuery() {
 }
 
 function syncUrl() {
-    router.replace({ query: buildQuery() })
+    router.replace({ query: { ...buildQuery(), page: String(page.value), limit: String(limit.value) } })
 }
 
-async function search(){
+async function search(resetPage = true){
+    if (resetPage) {
+        page.value = 1
+    }
 
-    problems.value=await getProblems(condition.value)
-    sortProblems()
+    const result = await getProblems(condition.value, page.value, limit.value)
+    pagination.value = result
+    problems.value = sortProblems(result.items)
     syncUrl()
 
 }
@@ -145,8 +154,13 @@ function toggleTag(tag:string){
 
 function handleSortChange(value: string) {
     sortOrder.value = value
-    sortProblems()
+    problems.value = sortProblems(problems.value)
     syncUrl()
+}
+
+async function changePage(nextPage: number) {
+    page.value = nextPage
+    await search(false)
 }
 
 watch(
@@ -182,7 +196,7 @@ AtCoder Learning Hub
 
 <label class="contest-select">
   <span>Contest</span>
-  <select v-model="condition.contestType" @change="search">
+  <select v-model="condition.contestType" @change="() => search(true)">
     <option value="">すべて</option>
     <option value="ABC">[ABC]のみ</option>
     <option value="ARC">[ARC]のみ</option>
@@ -204,6 +218,13 @@ AtCoder Learning Hub
 
 :problems="problems"
 
+/>
+
+<Pagination
+  :page="pagination.page"
+  :total="pagination.total"
+  :limit="pagination.limit"
+  @change="changePage"
 />
 
 </div>
