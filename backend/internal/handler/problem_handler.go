@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -10,25 +11,12 @@ import (
 	"github.com/ne241130/atcoder-learning-hub/backend/internal/model"
 )
 
-func GetProblems(c *gin.Context) {
-
-	tagsParam := strings.ToLower(c.Query("tags"))
-
-	var selectedTags []string
-
-	if tagsParam != "" {
-		selectedTags = strings.Split(tagsParam, ",")
-	}
-	keyword := strings.ToLower(c.Query("keyword"))
-
+func filterProblems(problems []model.Problem, keyword string, selectedTags []string, contestType string, minDifficulty *int, maxDifficulty *int) []model.Problem {
 	var result []model.Problem
 
-	for _, p := range mock.Problems {
-
-		// タグ検索
+	for _, p := range problems {
 		if len(selectedTags) > 0 {
 			found := false
-
 			for _, selectedTag := range selectedTags {
 				for _, t := range p.Tags {
 					if strings.ToLower(t) == selectedTag {
@@ -40,19 +28,27 @@ func GetProblems(c *gin.Context) {
 					break
 				}
 			}
-
 			if !found {
 				continue
 			}
 		}
 
-		// キーワード検索
+		if contestType != "" {
+			if !strings.HasPrefix(strings.ToUpper(p.Contest), strings.ToUpper(contestType)) {
+				continue
+			}
+		}
+
+		if minDifficulty != nil && p.Difficulty < *minDifficulty {
+			continue
+		}
+
+		if maxDifficulty != nil && p.Difficulty > *maxDifficulty {
+			continue
+		}
+
 		if keyword != "" {
-
-			target := strings.ToLower(
-				p.Title + " " + p.Contest,
-			)
-
+			target := strings.ToLower(p.Title + " " + p.Contest)
 			if !strings.Contains(target, keyword) {
 				continue
 			}
@@ -61,5 +57,32 @@ func GetProblems(c *gin.Context) {
 		result = append(result, p)
 	}
 
+	return result
+}
+
+func GetProblems(c *gin.Context) {
+	tagsParam := strings.ToLower(c.Query("tags"))
+	var selectedTags []string
+	if tagsParam != "" {
+		selectedTags = strings.Split(tagsParam, ",")
+	}
+	keyword := strings.ToLower(c.Query("keyword"))
+	contestType := strings.TrimSpace(c.Query("contestType"))
+
+	var minDifficulty *int
+	if minParam := c.Query("minDifficulty"); minParam != "" {
+		if parsed, err := strconv.Atoi(minParam); err == nil {
+			minDifficulty = &parsed
+		}
+	}
+
+	var maxDifficulty *int
+	if maxParam := c.Query("maxDifficulty"); maxParam != "" {
+		if parsed, err := strconv.Atoi(maxParam); err == nil {
+			maxDifficulty = &parsed
+		}
+	}
+
+	result := filterProblems(mock.Problems, keyword, selectedTags, contestType, minDifficulty, maxDifficulty)
 	c.JSON(http.StatusOK, result)
 }

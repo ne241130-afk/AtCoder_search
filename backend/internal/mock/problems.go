@@ -31,4 +31,13 @@ var Problems = []model.Problem{
 			"binary_search",
 		},
 	},
+	{
+		ID:         "arc144_b",
+		Title:      "Gift Tax",
+		Contest:    "ARC144",
+		Difficulty: 895,
+		Tags: []string{
+			"binary_search",
+		},
+	},
 }

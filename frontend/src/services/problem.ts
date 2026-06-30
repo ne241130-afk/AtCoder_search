@@ -25,7 +25,13 @@ export async function getProblems(
 
             keyword:condition.keyword,
 
-            tags:condition.tags.join(",")
+            tags:condition.tags.join(","),
+
+            contestType:condition.contestType,
+
+            minDifficulty:condition.minDifficulty ?? "",
+
+            maxDifficulty:condition.maxDifficulty ?? ""
 
         }
 
