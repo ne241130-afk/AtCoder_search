@@ -1,6 +1,6 @@
 import axios from "axios"
 
-import type { Problem } from "../types/problem"
+import type { Problem, UserProblemStatus } from "../types/problem"
 import type { PaginatedProblems } from "../types/paginatedProblems"
 import type { SearchCondition } from "../types/searchCondition"
 
@@ -49,4 +49,21 @@ export async function getProblems(
 
     return res.data
 
+}
+
+export async function getProblemStatus(problemId: string): Promise<UserProblemStatus> {
+    const res = await api.get(`/api/problems/${problemId}/status`)
+    return res.data
+}
+
+export async function updateProblemSolved(problemId: string, solved: boolean): Promise<void> {
+    await api.patch(`/api/problems/${problemId}/solved`, { solved })
+}
+
+export async function updateProblemFavorite(problemId: string, favorite: boolean): Promise<void> {
+    await api.patch(`/api/problems/${problemId}/favorite`, { favorite })
+}
+
+export async function updateProblemMemo(problemId: string, memo: string): Promise<void> {
+    await api.patch(`/api/problems/${problemId}/memo`, { memo })
 }

@@ -8,7 +8,7 @@ import ProblemList from "../components/ProblemList.vue"
 import Pagination from "../components/Pagination.vue"
 import SortSelect from "../components/SortSelect.vue"
 
-import {getProblems} from "../services/problem"
+import {getProblems, getProblemStatus} from "../services/problem"
 
 import type {Problem} from "../types/problem"
 import type {SearchCondition} from "../types/searchCondition"
@@ -121,8 +121,21 @@ async function search(resetPage = true){
     }
 
     const result = await getProblems(condition.value, page.value, limit.value)
+    const itemsWithStatus = await Promise.all(result.items.map(async (item) => {
+        try {
+            const status = await getProblemStatus(item.id)
+            return {
+                ...item,
+                solved: status.solved,
+                favorite: status.favorite,
+            }
+        } catch {
+            return item
+        }
+    }))
+
     pagination.value = result
-    problems.value = sortProblems(result.items)
+    problems.value = sortProblems(itemsWithStatus)
     syncUrl()
 
 }

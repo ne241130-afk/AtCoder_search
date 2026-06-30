@@ -6,6 +6,15 @@ export interface Problem {
   tags: string[]
   atCoderUrl: string
   problemsUrl: string
+  solved?: boolean
+  favorite?: boolean
+}
+
+export interface UserProblemStatus {
+  problemId: string
+  userId: string
   solved: boolean
   favorite: boolean
+  memo: string
+  updatedAt: number
 }

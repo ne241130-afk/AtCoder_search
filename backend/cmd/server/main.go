@@ -51,6 +51,10 @@ func main() {
 
 	r.GET("/api/problems", handler.GetProblems)
 	r.GET("/api/problems/:id", handler.GetProblemByID)
+	r.GET("/api/problems/:id/status", handler.GetProblemStatus)
+	r.PATCH("/api/problems/:id/solved", handler.PatchProblemSolved)
+	r.PATCH("/api/problems/:id/favorite", handler.PatchProblemFavorite)
+	r.PATCH("/api/problems/:id/memo", handler.PatchProblemMemo)
 	r.GET("/api/tags", handler.GetTags)
 	r.Run(":8080")
 }

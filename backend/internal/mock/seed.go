@@ -21,6 +21,10 @@ func SeedProblems() error {
 		if err := database.DB.Create(&problem).Error; err != nil {
 			return err
 		}
+		status := model.UserProblemStatus{ProblemID: problem.ID, UserID: "default"}
+		if err := database.DB.Create(&status).Error; err != nil {
+			return err
+		}
 	}
 
 	log.Println("seeded mock problems")

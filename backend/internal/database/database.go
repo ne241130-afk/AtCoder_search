@@ -30,8 +30,8 @@ func Connect() error {
 		return err
 	}
 
-	log.Printf("running auto-migration for model %T", &model.Problem{})
-	if err := DB.AutoMigrate(&model.Problem{}); err != nil {
+	log.Printf("running auto-migration for models %T and %T", &model.Problem{}, &model.UserProblemStatus{})
+	if err := DB.AutoMigrate(&model.Problem{}, &model.UserProblemStatus{}); err != nil {
 		log.Printf("failed to auto-migrate problem schema: %v", err)
 		return err
 	}

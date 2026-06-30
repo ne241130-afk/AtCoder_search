@@ -10,6 +10,17 @@ type Problem struct {
 	Tags        pq.StringArray `gorm:"type:text[]" json:"tags"`
 	AtCoderURL  string         `json:"atCoderUrl"`
 	ProblemsURL string         `json:"problemsUrl"`
-	Solved      bool           `json:"solved"`
-	Favorite    bool           `json:"favorite"`
+}
+
+type UserProblemStatus struct {
+	ProblemID string `gorm:"primaryKey;column:problem_id" json:"problemId"`
+	UserID    string `gorm:"index;not null;column:user_id" json:"userId"`
+	Solved    bool   `gorm:"column:solved" json:"solved"`
+	Favorite  bool   `gorm:"column:favorite" json:"favorite"`
+	Memo      string `gorm:"column:memo" json:"memo"`
+	UpdatedAt int64  `gorm:"autoUpdateTime:milli;column:updated_at" json:"updatedAt"`
+}
+
+func (UserProblemStatus) TableName() string {
+	return "user_problem_status"
 }

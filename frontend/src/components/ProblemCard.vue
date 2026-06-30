@@ -30,6 +30,11 @@ defineProps<{
       </span>
     </div>
 
+    <div class="status-row">
+      <span class="status-pill" :class="{ active: problem.solved }">Solved</span>
+      <span class="status-pill" :class="{ active: problem.favorite }">Favorite</span>
+    </div>
+
     <div class="actions">
       <a
         v-if="problem.atCoderUrl"
@@ -96,4 +101,28 @@ defineProps<{
     background:#2e7d32;
 }
 
+</style>
+
+<style scoped>
+.status-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #e0e0e0;
+  color: #555;
+  font-size: 12px;
+}
+
+.status-pill.active {
+  background: #2e7d32;
+  color: white;
+}
 </style>

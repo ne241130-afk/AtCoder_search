@@ -1,19 +1,61 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { getProblemById } from '../services/problem'
-import type { Problem } from '../types/problem'
+import { getProblemById, getProblemStatus, updateProblemFavorite, updateProblemMemo, updateProblemSolved } from '../services/problem'
+import type { Problem, UserProblemStatus } from '../types/problem'
 
 const route = useRoute()
 const router = useRouter()
 
 const problem = ref<Problem | null>(null)
+const status = ref<UserProblemStatus | null>(null)
+const memoDraft = ref('')
+const saving = ref(false)
 
-onMounted(async () => {
+async function loadProblem() {
   const id = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id
-  if (id) {
-    problem.value = await getProblemById(id)
+  if (!id) {
+    return
   }
+  problem.value = await getProblemById(id)
+  const nextStatus = await getProblemStatus(id)
+  status.value = nextStatus
+  memoDraft.value = nextStatus.memo
+}
+
+async function toggleSolved() {
+  if (!problem.value) return
+  const nextValue = !status.value?.solved
+  await updateProblemSolved(problem.value.id, nextValue)
+  if (status.value) {
+    status.value.solved = nextValue
+  }
+}
+
+async function toggleFavorite() {
+  if (!problem.value) return
+  const nextValue = !status.value?.favorite
+  await updateProblemFavorite(problem.value.id, nextValue)
+  if (status.value) {
+    status.value.favorite = nextValue
+  }
+}
+
+async function saveMemo() {
+  if (!problem.value) return
+  saving.value = true
+  try {
+    await updateProblemMemo(problem.value.id, memoDraft.value)
+    if (status.value) {
+      status.value.memo = memoDraft.value
+    }
+  } finally {
+    saving.value = false
+  }
+}
+
+onMounted(() => {
+  loadProblem()
 })
 </script>
 
@@ -48,13 +90,22 @@ onMounted(async () => {
     <hr />
 
     <h2>学習情報</h2>
-    <p><strong>Solved</strong>：未実装</p>
-    <p><strong>Favorite</strong>：未実装</p>
+    <div class="status-actions">
+      <button class="toggle-button" :class="{ active: status?.solved }" @click="toggleSolved">
+        {{ status?.solved ? '✓ Solved' : '○ Solved' }}
+      </button>
+      <button class="toggle-button" :class="{ active: status?.favorite }" @click="toggleFavorite">
+        {{ status?.favorite ? '★ Favorite' : '☆ Favorite' }}
+      </button>
+    </div>
 
     <hr />
 
     <h2>メモ</h2>
-    <p>（今後実装予定）</p>
+    <textarea v-model="memoDraft" rows="6" class="memo-input" placeholder="学習メモを入力"></textarea>
+    <button class="save-button" @click="saveMemo" :disabled="saving">
+      {{ saving ? '保存中...' : '保存' }}
+    </button>
   </div>
 </template>
 
