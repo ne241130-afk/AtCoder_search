@@ -1,9 +1,14 @@
+export interface Tag {
+  id: number
+  name: string
+}
+
 export interface Problem {
   id: string
   title: string
   contest: string
   difficulty: number
-  tags: string[]
+  tags: Tag[]
   atCoderUrl: string
   problemsUrl: string
   solved?: boolean

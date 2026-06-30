@@ -142,7 +142,7 @@ async function search(resetPage = true){
 
 onMounted(async () => {
 
-    tags.value = await getTags()
+    tags.value = (await getTags()).map(tag => tag.name)
     parseQuery(route.query)
     await search()
 

@@ -19,7 +19,7 @@ func filterProblems(problems []model.Problem, keyword string, selectedTags []str
 			found := false
 			for _, selectedTag := range selectedTags {
 				for _, t := range p.Tags {
-					if strings.ToLower(t) == selectedTag {
+					if strings.ToLower(t.Name) == selectedTag {
 						found = true
 						break
 					}

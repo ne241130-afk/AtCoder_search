@@ -1,6 +1,6 @@
 import axios from "axios"
 
-import type { Problem, UserProblemStatus } from "../types/problem"
+import type { Problem, Tag, UserProblemStatus } from "../types/problem"
 import type { PaginatedProblems } from "../types/paginatedProblems"
 import type { SearchCondition } from "../types/searchCondition"
 
@@ -8,12 +8,22 @@ const api = axios.create({
     baseURL:"http://localhost:8081"
 })
 
-export async function getTags(): Promise<string[]> {
-
+export async function getTags(): Promise<Tag[]> {
     const res = await api.get("/api/tags")
-
     return res.data
+}
 
+export async function createTag(name: string): Promise<Tag> {
+    const res = await api.post("/api/tags", { name })
+    return res.data
+}
+
+export async function attachProblemTag(problemId: string, tagId: number): Promise<void> {
+    await api.post(`/api/problems/${problemId}/tags`, { tag_id: tagId })
+}
+
+export async function detachProblemTag(problemId: string, tagId: number): Promise<void> {
+    await api.delete(`/api/problems/${problemId}/tags/${tagId}`)
 }
 
 export async function getProblemById(id: string): Promise<Problem> {

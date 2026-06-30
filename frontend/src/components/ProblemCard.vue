@@ -23,10 +23,10 @@ defineProps<{
     <div class="tags">
       <span
         v-for="tag in problem.tags"
-        :key="tag"
+        :key="tag.id"
         class="tag"
       >
-        {{ tag }}
+        {{ tag.name }}
       </span>
     </div>
 

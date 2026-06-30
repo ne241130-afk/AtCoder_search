@@ -9,13 +9,13 @@ type ProblemRepository struct{}
 
 func (r *ProblemRepository) FindAll() ([]model.Problem, error) {
 	var problems []model.Problem
-	err := database.DB.Order("difficulty asc").Find(&problems).Error
+	err := database.DB.Preload("Tags").Order("difficulty asc").Find(&problems).Error
 	return problems, err
 }
 
 func (r *ProblemRepository) FindByID(id string) (*model.Problem, error) {
 	var problem model.Problem
-	err := database.DB.Where("id = ?", id).First(&problem).Error
+	err := database.DB.Preload("Tags").Where("id = ?", id).First(&problem).Error
 	if err != nil {
 		return nil, err
 	}
