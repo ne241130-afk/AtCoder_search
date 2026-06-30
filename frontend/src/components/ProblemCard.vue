@@ -30,9 +30,26 @@ defineProps<{
       </span>
     </div>
 
-    <button>
-      詳細
-    </button>
+    <div class="actions">
+      <a
+        v-if="problem.atCoderUrl"
+        :href="problem.atCoderUrl"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="action-link"
+      >
+        問題を開く
+      </a>
+      <a
+        v-if="problem.problemsUrl"
+        :href="problem.problemsUrl"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="action-link"
+      >
+        AtCoder Problems
+      </a>
+    </div>
   </div>
 </template>
 
@@ -56,8 +73,20 @@ defineProps<{
     font-size:13px;
 }
 
-button{
+.actions{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
     margin-top:15px;
+}
+
+.action-link{
+    display:inline-block;
+    padding:8px 12px;
+    border-radius:8px;
+    background:#1976d2;
+    color:white;
+    text-decoration:none;
 }
 
 </style>

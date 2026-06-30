@@ -4,4 +4,8 @@ export interface Problem {
   contest: string
   difficulty: number
   tags: string[]
+  atCoderUrl: string
+  problemsUrl: string
+  solved: boolean
+  favorite: boolean
 }

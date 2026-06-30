@@ -12,6 +12,8 @@ var Problems = []model.Problem{
 			"sort",
 			"string",
 		},
+		AtCoderURL:  "https://atcoder.jp/contests/abc042/tasks/abc042_b",
+		ProblemsURL: "https://kenkoooo.com/atcoder#/task/abc042_b",
 	},
 	{
 		ID:         "abc153_e",
@@ -21,6 +23,8 @@ var Problems = []model.Problem{
 		Tags: []string{
 			"dp",
 		},
+		AtCoderURL:  "https://atcoder.jp/contests/abc153/tasks/abc153_e",
+		ProblemsURL: "https://kenkoooo.com/atcoder#/task/abc153_e",
 	},
 	{
 		ID:         "abc146_c",
@@ -30,6 +34,8 @@ var Problems = []model.Problem{
 		Tags: []string{
 			"binary_search",
 		},
+		AtCoderURL:  "https://atcoder.jp/contests/abc146/tasks/abc146_c",
+		ProblemsURL: "https://kenkoooo.com/atcoder#/task/abc146_c",
 	},
 	{
 		ID:         "arc144_b",
@@ -39,5 +45,7 @@ var Problems = []model.Problem{
 		Tags: []string{
 			"binary_search",
 		},
+		AtCoderURL:  "https://atcoder.jp/contests/arc144/tasks/arc144_b",
+		ProblemsURL: "https://kenkoooo.com/atcoder#/task/arc144_b",
 	},
 }
