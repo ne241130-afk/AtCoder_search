@@ -1,53 +1,59 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue"
 
-import ProblemCard from "../components/ProblemCard.vue"
+import SearchBar from "../components/SearchBar.vue"
+import ProblemList from "../components/ProblemList.vue"
 
 import { getProblems } from "../services/problem"
 
 import type { Problem } from "../types/problem"
 
 const problems = ref<Problem[]>([])
-const keyword = ref("")
 
-async function search() {
-    problems.value = await getProblems(keyword.value)
+async function load(keyword = "") {
+    problems.value = await getProblems(keyword)
 }
 
-onMounted(async () => {
-  problems.value = await getProblems()
+onMounted(() => {
+    load()
 })
 </script>
 
 <template>
-  <div class="container">
 
-    <h1>
-      AtCoder Learning Hub
-    </h1>
+<div class="container">
 
-    <input
-        v-model="keyword"
-        @input="search"
-        placeholder="問題名を検索"
-    />
+<h1>
 
-    <ProblemCard
-      v-for="problem in problems"
-      :key="problem.id"
-      :problem="problem"
-    />
+AtCoder Learning Hub
 
-  </div>
+</h1>
+
+<SearchBar
+
+@search="load"
+
+/>
+
+<ProblemList
+
+:problems="problems"
+
+/>
+
+</div>
+
 </template>
 
 <style scoped>
 
 .container{
 
-    width:900px;
+max-width:900px;
 
-    margin:auto;
+margin:auto;
+
+padding:30px;
 
 }
 
