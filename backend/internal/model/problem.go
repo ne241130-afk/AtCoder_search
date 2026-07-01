@@ -6,7 +6,6 @@ type Problem struct {
 	Contest     string `gorm:"not null" json:"contest"`
 	Difficulty  int    `gorm:"not null" json:"difficulty"`
 	AtCoderURL  string `json:"atCoderUrl"`
-	ProblemsURL string `json:"problemsUrl"`
 	Tags        []Tag  `gorm:"many2many:problem_tags;joinForeignKey:problem_id;joinReferences:tag_id" json:"tags"`
 }
 

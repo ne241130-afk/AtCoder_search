@@ -45,15 +45,6 @@ defineProps<{
       >
         問題を開く
       </a>
-      <a
-        v-if="problem.problemsUrl"
-        :href="problem.problemsUrl"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="action-link"
-      >
-        AtCoder Problems
-      </a>
       <router-link :to="{ name: 'problem-detail', params: { id: problem.id } }" class="action-link detail-link">
         詳細を見る
       </router-link>

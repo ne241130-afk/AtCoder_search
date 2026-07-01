@@ -191,9 +191,6 @@ onMounted(async () => {
       <a :href="problem.atCoderUrl" target="_blank" rel="noopener noreferrer" class="action-link">
         問題を開く
       </a>
-      <a :href="problem.problemsUrl" target="_blank" rel="noopener noreferrer" class="action-link">
-        AtCoder Problems
-      </a>
     </div>
 
     <hr />

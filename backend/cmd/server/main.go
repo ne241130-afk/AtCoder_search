@@ -9,7 +9,7 @@ import (
 
 	"github.com/ne241130/atcoder-learning-hub/backend/internal/database"
 	"github.com/ne241130/atcoder-learning-hub/backend/internal/handler"
-	"github.com/ne241130/atcoder-learning-hub/backend/internal/mock"
+	"github.com/ne241130/atcoder-learning-hub/backend/internal/seed"
 )
 
 func main() {
@@ -17,7 +17,7 @@ func main() {
 		log.Fatalf("failed to connect database: %v", err)
 	}
 
-	if err := mock.SeedProblems(); err != nil {
+	if err := seed.SeedProblems(); err != nil {
 		log.Fatalf("failed to seed problems: %v", err)
 	}
 

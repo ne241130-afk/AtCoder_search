@@ -1,4 +1,4 @@
-package mock
+package seed
 
 import "github.com/ne241130/atcoder-learning-hub/backend/internal/model"
 
@@ -13,7 +13,6 @@ var Problems = []model.Problem{
 			{Name: "string"},
 		},
 		AtCoderURL:  "https://atcoder.jp/contests/abc042/tasks/abc042_b",
-		ProblemsURL: "https://kenkoooo.com/atcoder#/task/abc042_b",
 	},
 	{
 		ID:         "abc153_e",
@@ -24,7 +23,6 @@ var Problems = []model.Problem{
 			{Name: "dp"},
 		},
 		AtCoderURL:  "https://atcoder.jp/contests/abc153/tasks/abc153_e",
-		ProblemsURL: "https://kenkoooo.com/atcoder#/task/abc153_e",
 	},
 	{
 		ID:         "abc146_c",
@@ -35,7 +33,6 @@ var Problems = []model.Problem{
 			{Name: "binary_search"},
 		},
 		AtCoderURL:  "https://atcoder.jp/contests/abc146/tasks/abc146_c",
-		ProblemsURL: "https://kenkoooo.com/atcoder#/task/abc146_c",
 	},
 	{
 		ID:         "arc144_b",
@@ -46,6 +43,15 @@ var Problems = []model.Problem{
 			{Name: "binary_search"},
 		},
 		AtCoderURL:  "https://atcoder.jp/contests/arc144/tasks/arc144_b",
-		ProblemsURL: "https://kenkoooo.com/atcoder#/task/arc144_b",
+	},
+	{
+		ID:         "abc001_d",
+		Title:      "感雨時刻の整理",
+		Contest:    "ABC001",
+		Difficulty: 1565,
+		Tags: []model.Tag{
+			{Name: "いもす法"},
+		},
+		AtCoderURL:  "https://atcoder.jp/contests/abc001/tasks/abc001_d",
 	},
 }
